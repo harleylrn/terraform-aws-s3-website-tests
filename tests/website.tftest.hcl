@@ -47,3 +47,23 @@ run "website_is_running" {
   }
 }
 
+override_resource {
+  target = aws_instance.backend_api
+}
+
+override_resource {
+  target = aws_db_instance.backend_api
+}
+
+run "check_backend_api" {
+  assert {
+    condition     = aws_instance.backend_api.tags.Name == "backend"
+    error_message = "Invalid name tag"
+  }
+
+  assert {
+    condition     = aws_db_instance.backend_api.username == "foo"
+    error_message = "Invalid database username"
+  }
+}
+
